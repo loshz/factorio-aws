@@ -61,7 +61,7 @@ resource "aws_security_group" "factorio" {
   ingress {
     from_port   = 34197
     to_port     = 34197
-    protocol    = "tcp"
+    protocol    = "udp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
