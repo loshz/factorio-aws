@@ -1,21 +1,15 @@
-data "aws_ami" "ubuntu" {
+data "aws_ami" "amazon_linux_2" {
   most_recent = true
+  owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+    values = ["amzn2-ami-hvm*"]
   }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"] # Canonical
 }
 
 resource "aws_instance" "factorio" {
-  ami           = data.aws_ami.ubuntu.id
+  ami           = data.aws_ami.amazon_linux_2.id
   instance_type = var.ec2_instance_type
 
   tags = merge(
