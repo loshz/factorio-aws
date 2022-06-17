@@ -6,7 +6,11 @@ Configure a [Headless Factorio Server](https://wiki.factorio.com/Multiplayer#Ded
 ## Usage
 
 ### AWS
-TOOD:
+TODO:
 - Document IAM permissions
 
 ### Terraform
+TODO
+
+### Factorio
+TODO

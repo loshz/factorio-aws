@@ -8,6 +8,44 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
+resource "random_password" "server" {
+  length      = 32
+  upper       = true
+  numeric     = true
+  special     = true
+  min_special = 8
+}
+
+data "cloudinit_config" "factorio" {
+  gzip          = false
+  base64_encode = true
+
+  part {
+    content_type = "text/x-shellscript"
+    filename     = "start.sh"
+    content      = templatefile("${path.module}/scripts/start.sh", { version = var.factorio_version })
+  }
+
+  part {
+    content_type = "text/cloud-config"
+    filename     = "cloud-config.yaml"
+    content = <<EOF
+#cloud-config
+${jsonencode({
+    write_files = [
+      {
+        path        = "/opt/factorio/data/server-settings.json"
+        permissions = "0644"
+        owner       = "factorio:factorio"
+        encoding    = "b64"
+        content     = base64encode(templatefile("${path.module}/factorio/server-settings.json", { password = random_password.server.result }))
+      },
+    ]
+})}
+EOF
+}
+}
+
 resource "aws_instance" "factorio" {
   ami                         = data.aws_ami.amazon_linux_2.id
   associate_public_ip_address = true
@@ -17,7 +55,7 @@ resource "aws_instance" "factorio" {
   subnet_id                   = aws_subnet.factorio_public.id
   vpc_security_group_ids      = [aws_security_group.factorio.id]
 
-  user_data                   = templatefile("${path.module}/start.sh", { version = var.factorio_version })
+  user_data                   = data.cloudinit_config.factorio.rendered
   user_data_replace_on_change = true
 
   ebs_block_device {
