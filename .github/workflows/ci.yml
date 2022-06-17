@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+    tags: ["*"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.2
+
+    - working-directory: ./terraform
+      run: |
+        # Initialize terraform with no remote state store
+        terraform init -backend=false
+        # Check terraform formatting
+        terraform fmt -recursive -check
+        # Check terraform files are valid
+        terraform validate
