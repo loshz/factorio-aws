@@ -23,3 +23,15 @@ variable "ec2_instance_type" {
   description = "AWS instance type of the EC2 VM"
   default     = "t3.medium"
 }
+
+variable "ec2_volume_size" {
+  type        = number
+  description = "Size (GiB) of the attached EBS volume"
+  default     = 20
+}
+
+variable "factorio_version" {
+  type        = string
+  description = "Factorio Headless Server version"
+  default     = "1.1.59"
+}
