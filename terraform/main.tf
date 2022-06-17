@@ -2,7 +2,7 @@ terraform {
   required_version = "~> 1.2"
 
   backend "s3" {
-    key     = "factorio/factorio.tfstate"
+    key     = "factorio.tfstate"
     encrypt = true
   }
 
