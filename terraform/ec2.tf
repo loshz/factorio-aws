@@ -1,3 +1,4 @@
+# Get the latest Amazon Linux 2 AMI.
 data "aws_ami" "amazon_linux_2" {
   most_recent = true
   owners      = ["amazon"]
@@ -8,6 +9,7 @@ data "aws_ami" "amazon_linux_2" {
   }
 }
 
+# Create a single EC2 instance with a public ip.
 resource "aws_instance" "factorio" {
   ami                         = data.aws_ami.amazon_linux_2.id
   associate_public_ip_address = true

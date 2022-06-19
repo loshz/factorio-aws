@@ -1,3 +1,4 @@
+# Create a single VPC with DNS support.
 resource "aws_vpc" "factorio" {
   cidr_block           = var.vpc_cidr
   enable_dns_support   = true
@@ -9,6 +10,7 @@ resource "aws_vpc" "factorio" {
   )
 }
 
+# Create a single public subnet.
 resource "aws_subnet" "factorio_public" {
   vpc_id                  = aws_vpc.factorio.id
   cidr_block              = var.vpc_cidr
@@ -20,6 +22,7 @@ resource "aws_subnet" "factorio_public" {
   )
 }
 
+# Create an IGW to enable internet-routable traffic.
 resource "aws_internet_gateway" "factorio" {
   vpc_id = aws_vpc.factorio.id
 
@@ -29,6 +32,7 @@ resource "aws_internet_gateway" "factorio" {
   )
 }
 
+# Create a single public route table to direct network traffic.
 resource "aws_route_table" "factorio_public" {
   vpc_id = aws_vpc.factorio.id
 
@@ -43,11 +47,14 @@ resource "aws_route_table" "factorio_public" {
   )
 }
 
+# Associate the route table with the public subnet.
 resource "aws_route_table_association" "factorio_public" {
   subnet_id      = aws_subnet.factorio_public.id
   route_table_id = aws_route_table.factorio_public.id
 }
 
+# Create a security group with public egress and a single
+# UDP ingress rule for the required Factorio port.
 resource "aws_security_group" "factorio" {
   vpc_id = aws_vpc.factorio.id
 

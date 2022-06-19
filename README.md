@@ -1,4 +1,4 @@
-# Factorio on aws
+# Factorio on AWS
 [![Build Status](https://github.com/loshz/factorio-aws/workflows/ci/badge.svg)](https://github.com/loshz/factorio-aws/actions)
 
 Configure a [Headless Factorio Server](https://wiki.factorio.com/Multiplayer#Dedicated.2FHeadless_server) on AWS managed by Terraform.
