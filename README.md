@@ -29,7 +29,7 @@ The following [input variables](https://www.terraform.io/language/values/variabl
 
 Once all of the above has been configured, you can run the following commands:
 ```bash
-$ cd ./factorio
+$ cd ./terraform
 
 # Initialize Terraform:
 $ terraform init
