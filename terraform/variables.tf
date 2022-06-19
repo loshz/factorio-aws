@@ -4,7 +4,13 @@ locals {
   # Reference: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
   tags = {
     "terraform.io/managed" = "true"
+    "factorio.com/version" = var.factorio_version
   }
+}
+
+variable "s3_bucket" {
+  type        = string
+  description = "AWS S3 bucket name for storing state and other configs"
 }
 
 variable "region" {
@@ -22,12 +28,6 @@ variable "ec2_instance_type" {
   type        = string
   description = "AWS instance type of the EC2 VM"
   default     = "t3.medium"
-}
-
-variable "ec2_volume_size" {
-  type        = number
-  description = "Size (GiB) of the attached EBS volume"
-  default     = 20
 }
 
 variable "factorio_version" {
