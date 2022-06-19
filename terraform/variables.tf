@@ -32,6 +32,6 @@ variable "ec2_instance_type" {
 
 variable "factorio_version" {
   type        = string
-  description = "Factorio Headless Server version"
+  description = "Factorio version"
   default     = "1.1.59"
 }
