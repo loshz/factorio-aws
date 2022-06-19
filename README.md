@@ -1,4 +1,5 @@
-# Factorio on AWS [![Build Status](https://github.com/loshz/factorio-aws/workflows/ci/badge.svg)](https://github.com/loshz/factorio-aws/actions)
+# Factorio on aws
+[![Build Status](https://github.com/loshz/factorio-aws/workflows/ci/badge.svg)](https://github.com/loshz/factorio-aws/actions)
 
 Configure a [Headless Factorio Server](https://wiki.factorio.com/Multiplayer#Dedicated.2FHeadless_server) on AWS managed by Terraform.
 
@@ -9,6 +10,7 @@ Firstly, you'll need to [create an S3 bucket](https://docs.aws.amazon.com/Amazon
 
 You'll then need to create an IAM user with read/write access to the following services:
 - EC2
+- IAM
 - S3
 - VPC
 
@@ -57,3 +59,4 @@ s3://[bucket]/factorio/data/
 - `map-settings.json`: To control pollution spread, biter expansion and evolution, and more.
 - `server-settings.json`: To specify game visibility, timeouts, etc.
 
+You can find examples of each file under the same directories in your local installation.
