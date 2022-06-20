@@ -48,11 +48,19 @@ if aws s3 ls $${S3}/data/server-settings.json > /dev/null; then
 	aws s3 cp $${S3}/data/server-settings.json ./data/server-settings.json
 fi
 
-# Change file permisions and user.
-sudo adduser $${USER}
+# Change file permisions and create factorio user.
+sudo adduser --system $${USER}
 sudo chown -R $${USER}:$${USER} $${INSTALL_DIR}
-sudo su - $${USER}
+
+# Create a systemd service unit.
+echo "[Unit]
+Description=Factorio Headless Server
+
+[Service]
+Type=simple
+User=$${USER}
+ExecStart=$${BIN} --server-settings $${INSTALL_DIR}/data/server-settings.json --start-server-load-latest $${INSTALL_DIR}/saves/factorio.zip" | sudo tee /etc/systemd/system/factorio.service
 
 # Finally, start the server.
 echo "Starting factorio server..."
-$${BIN} --start-server ./saves/factorio.zip --server-settings ./data/server-settings.json
+sudo systemctl start factorio
