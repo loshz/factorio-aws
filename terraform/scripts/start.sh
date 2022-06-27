@@ -63,4 +63,4 @@ ExecStart=$${BIN} --server-settings $${INSTALL_DIR}/data/server-settings.json --
 
 # Finally, start the server.
 echo "Starting factorio server..."
-sudo systemctl start factorio
+sudo systemctl enable --now factorio

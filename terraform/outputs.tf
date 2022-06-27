@@ -7,5 +7,5 @@ output "ec2_instance_state" {
 }
 
 output "ec2_instance_public_ip" {
-  value = aws_instance.factorio.public_ip
+  value = aws_eip.factorio.public_ip
 }
