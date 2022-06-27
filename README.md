@@ -64,5 +64,5 @@ You can find examples of each file under the same directories in your local inst
 ### Debugging
 If you need access to the server, you can use the instance's [SSM agent](https://docs.aws.amazon.com/systems-manager/latest/userguide/prereqs-ssm-agent.html) to connect via the AWS CLI:
 ```bash
-aws ssm start-session --target [instance_id]
+$ aws ssm start-session --target [instance_id]
 ```
