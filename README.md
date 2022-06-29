@@ -34,13 +34,10 @@ $ cd ./terraform
 # Initialize Terraform:
 $ terraform init
 
-# Generates an execution plan:
-$ terraform plan
-
 # Create the resources:
 $ terraform apply
 ...
-Apply complete! Resources: 12 added, 0 changed, 0 destroyed.
+Apply complete! Resources: 13 added, 0 changed, 0 destroyed.
 ```
 
 ### Factorio
@@ -50,6 +47,7 @@ To use a previous save, upload the zip file to:
 ```
 s3://[bucket]/factorio/saves/factorio.zip
 ```
+> **Note**: the server will automatically backup save files to the above S3 bucket every 15mins. 
 
 To configure server and map settings, upload the following files to:
 ```

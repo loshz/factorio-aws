@@ -52,7 +52,7 @@ fi
 sudo adduser --system $${USER}
 sudo chown -R $${USER}:$${USER} $${INSTALL_DIR}
 
-# Create a systemd service unit.
+# Create a systemd service for the headless server.
 echo "[Unit]
 Description=Factorio Headless Server
 
@@ -61,6 +61,25 @@ Type=simple
 User=$${USER}
 ExecStart=$${BIN} --server-settings $${INSTALL_DIR}/data/server-settings.json --start-server-load-latest $${INSTALL_DIR}/saves/factorio.zip" | sudo tee /etc/systemd/system/factorio.service
 
+# Create a systemd service for the backup service.
+echo "[Unit]
+Description=Sync Factorio saves to S3
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/aws s3 cp $${INSTALL_DIR}/saves/factorio.zip $${S3}/saves/factorio.zip" | sudo tee /etc/systemd/system/factorio-backup.service
+
+# Create a systemd timer for backup service.
+echo "[Unit]
+Description=Run Factorio backup service every 15m
+
+[Timer]
+OnBootSec=900s
+OnUnitActiveSec=900s
+
+[Install]
+WantedBy=timers.target" | sudo tee /etc/systemd/system/factorio-backup.timer
+
 # Finally, start the server.
 echo "Starting factorio server..."
-sudo systemctl enable --now factorio
+sudo systemctl enable --now factorio.service factorio-backup.timer
