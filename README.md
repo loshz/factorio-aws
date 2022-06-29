@@ -14,7 +14,7 @@ You'll then need to create an IAM user with read/write access to the following s
 - S3
 - VPC
 
-> **Note:** for better security, you should scope permissions to a single user with fixed resources. Follow the [IAM resource guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) for best practices.
+> **Note**: for better security, you should scope permissions to a single user with fixed resources. Follow the [IAM resource guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) for best practices.
 
 ### Terraform
 The following [input variables](https://www.terraform.io/language/values/variables) are configurable:
