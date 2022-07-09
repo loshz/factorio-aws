@@ -30,6 +30,12 @@ variable "ec2_instance_type" {
   default     = "t3.medium"
 }
 
+variable "ec2_volume_size" {
+  type        = number
+  description = "Size (GiB) of the root EC2 volume"
+  default     = 20
+}
+
 variable "factorio_version" {
   type        = string
   description = "Factorio version"

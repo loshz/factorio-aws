@@ -21,6 +21,13 @@ resource "aws_instance" "factorio" {
   user_data                   = templatefile("${path.module}/scripts/start.sh", { bucket = var.s3_bucket, version = var.factorio_version })
   user_data_replace_on_change = true
 
+  root_block_device {
+    volume_size = var.ec2_volume_size
+    volume_type = "gp3"
+
+    tags = local.tags
+  }
+
   tags = merge(
     { Name = "factorio" },
     local.tags,
