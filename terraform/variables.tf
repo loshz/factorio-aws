@@ -21,7 +21,7 @@ variable "region" {
 variable "vpc_cidr" {
   type        = string
   description = "CIDR of the VPC"
-  default     = "172.16.0.0/16"
+  default     = "172.25.16.0/24"
 }
 
 variable "ec2_instance_type" {
