@@ -39,5 +39,5 @@ variable "ec2_volume_size" {
 variable "factorio_version" {
   type        = string
   description = "Factorio version"
-  default     = "1.1.59"
+  default     = "1.1.61"
 }

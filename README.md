@@ -26,7 +26,7 @@ The following [input variables](https://www.terraform.io/language/values/variabl
 | vpc_cidr | string | 172.25.16.0/24 | CIDR of the VPC |
 | ec2_instance_type | string | t3.medium | AWS instance type of the EC2 VM |
 | ec2_volume_size | number | 20 | Size (GiB) of the root EC2 volume |
-| factorio_version | string | 1.1.59 | Factorio version |
+| factorio_version | string | 1.1.61 | Factorio version |
 
 Once all of the above has been configured, you can run the following commands:
 ```bash
