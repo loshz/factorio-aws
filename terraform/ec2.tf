@@ -21,6 +21,12 @@ resource "aws_instance" "factorio" {
   user_data                   = templatefile("${path.module}/scripts/start.sh", { bucket = var.s3_bucket, version = var.factorio_version })
   user_data_replace_on_change = true
 
+  metadata_options {
+    http_endpoint = "enabled"
+    # Requiring session tokens will enable IMDSv2 and disable IMDSv1.
+    http_tokens = "required"
+  }
+
   root_block_device {
     volume_size = var.ec2_volume_size
     volume_type = "gp3"
