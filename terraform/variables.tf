@@ -22,6 +22,11 @@ variable "vpc_cidr" {
   type        = string
   description = "CIDR of the VPC"
   default     = "172.25.16.0/24"
+
+  validation {
+    condition     = can(cidrnetmask(var.vpc_cidr))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
 }
 
 variable "ec2_instance_type" {
@@ -34,10 +39,26 @@ variable "ec2_volume_size" {
   type        = number
   description = "Size (GiB) of the root EC2 volume"
   default     = 20
+
+  validation {
+    condition     = var.ec2_volume_size >= 10
+    error_message = "Must be greater than or equal to 10 (GiB)."
+  }
+}
+
+variable "ingress_cidr" {
+  type        = string
+  description = "CIDR of the allowed ingress traffic"
+  default     = "0.0.0.0/0"
+
+  validation {
+    condition     = can(cidrnetmask(var.ingress_cidr))
+    error_message = "Must be a valid IPv4 CIDR block address."
+  }
 }
 
 variable "factorio_version" {
   type        = string
   description = "Factorio version"
-  default     = "1.1.61"
+  default     = "1.1.69"
 }

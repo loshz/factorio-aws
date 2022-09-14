@@ -69,7 +69,7 @@ resource "aws_security_group" "factorio" {
     from_port   = 34197
     to_port     = 34197
     protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.ingress_cidr]
   }
 
   tags = merge(
