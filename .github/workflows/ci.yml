@@ -7,21 +7,20 @@ on:
     branches: ["main"]
     tags: ["*"]
 
+
+defaults:
+  run:
+    working-directory: terraform
+
 jobs:
   validate:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v2
-
+    - uses: actions/checkout@v3
     - uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.2
 
-    - working-directory: ./terraform
-      run: |
-        # Initialize terraform with no remote state store
-        terraform init -backend=false
-        # Check terraform formatting
-        terraform fmt -recursive -check
-        # Check terraform files are valid
-        terraform validate
+    # Initialize terraform with no remote state store and
+    # validate resources.
+    - run: terraform init -backend=false
+    - run: terraform fmt -recursive -check
+    - run: terraform validate
