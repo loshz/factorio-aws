@@ -32,7 +32,7 @@ variable "vpc_cidr" {
 variable "ec2_instance_type" {
   type        = string
   description = "AWS instance type of the EC2 VM"
-  default     = "t3.medium"
+  default     = "t3a.medium"
 }
 
 variable "ec2_volume_size" {
@@ -46,19 +46,21 @@ variable "ec2_volume_size" {
   }
 }
 
-variable "ingress_cidr" {
-  type        = string
-  description = "CIDR of the allowed ingress traffic"
-  default     = "0.0.0.0/0"
+variable "ingress_cidrs" {
+  type        = list(string)
+  description = "List of CIDRs of the allowed ingress traffic"
+  default     = ["0.0.0.0/0"]
 
   validation {
-    condition     = can(cidrnetmask(var.ingress_cidr))
-    error_message = "Must be a valid IPv4 CIDR block address."
+    condition = length(var.ingress_cidrs) > 0 && alltrue([
+      for a in var.ingress_cidrs : can(cidrnetmask(a))
+    ])
+    error_message = "List must not be empty and all addresses must be in valid IPv4 CIDR notation."
   }
 }
 
 variable "factorio_version" {
   type        = string
   description = "Factorio version"
-  default     = "1.1.69"
+  default     = "1.1.76"
 }
