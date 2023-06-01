@@ -62,5 +62,5 @@ variable "ingress_cidrs" {
 variable "factorio_version" {
   type        = string
   description = "Factorio version"
-  default     = "1.1.76"
+  default     = "1.1.80"
 }

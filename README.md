@@ -27,7 +27,7 @@ The following [input variables](https://www.terraform.io/language/values/variabl
 | ec2_instance_type | string | t3a.medium | AWS instance type of the EC2 VM |
 | ec2_volume_size | number | 20 | Size (GiB) of the root EC2 volume |
 | ingress_cidrs | list(string) | ["0.0.0.0/0"] | List of IPv4 CIDRs of the allowed ingress traffic |
-| factorio_version | string | 1.1.76 | Factorio version |
+| factorio_version | string | 1.1.80 | Factorio version |
 
 Once all of the above has been configured, you can run the following commands:
 ```bash
