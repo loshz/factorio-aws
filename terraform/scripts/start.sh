@@ -67,6 +67,7 @@ Description=Sync Factorio saves to S3
 
 [Service]
 Type=oneshot
+User=$${USER}
 ExecStart=/usr/bin/aws s3 cp $${INSTALL_DIR}/saves/factorio.zip $${S3}/saves/factorio.zip" | sudo tee /etc/systemd/system/factorio-backup.service
 
 # Create a systemd timer for backup service.

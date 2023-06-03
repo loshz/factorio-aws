@@ -14,8 +14,6 @@ resource "aws_iam_role" "factorio" {
       },
     ]
   })
-
-  tags = local.tags
 }
 
 # Attach the managed SSM policy to the base role.
@@ -45,8 +43,6 @@ resource "aws_iam_policy" "s3_read_write" {
       }
     ]
   })
-
-  tags = local.tags
 }
 
 # Attach the S3 read/write policy to the base IAM role.
@@ -59,6 +55,4 @@ resource "aws_iam_role_policy_attachment" "s3_read_write" {
 resource "aws_iam_instance_profile" "factorio" {
   name = "FactorioServerInstanceProfile"
   role = aws_iam_role.factorio.id
-
-  tags = local.tags
 }

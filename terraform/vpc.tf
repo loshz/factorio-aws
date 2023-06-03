@@ -4,36 +4,27 @@ resource "aws_vpc" "factorio" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags = merge(
-    { Name = "factorio" },
-    local.tags,
-  )
+  tags = { Name = "factorio" }
 }
 
 # Create a single public subnet.
-resource "aws_subnet" "factorio_public" {
+resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.factorio.id
   cidr_block              = var.vpc_cidr
   map_public_ip_on_launch = true
 
-  tags = merge(
-    { Name = "factorio-public" },
-    local.tags,
-  )
+  tags = { Name = "public" }
 }
 
 # Create an IGW to enable internet-routable traffic.
 resource "aws_internet_gateway" "factorio" {
   vpc_id = aws_vpc.factorio.id
 
-  tags = merge(
-    { Name = "factorio" },
-    local.tags,
-  )
+  tags = { Name = "factorio" }
 }
 
 # Create a single public route table to direct network traffic.
-resource "aws_route_table" "factorio_public" {
+resource "aws_route_table" "public" {
   vpc_id = aws_vpc.factorio.id
 
   route {
@@ -41,16 +32,13 @@ resource "aws_route_table" "factorio_public" {
     gateway_id = aws_internet_gateway.factorio.id
   }
 
-  tags = merge(
-    { Name = "factorio-public" },
-    local.tags,
-  )
+  tags = { Name = "factorio" }
 }
 
 # Associate the route table with the public subnet.
 resource "aws_route_table_association" "factorio_public" {
-  subnet_id      = aws_subnet.factorio_public.id
-  route_table_id = aws_route_table.factorio_public.id
+  subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public.id
 }
 
 # Create a security group with public egress and a single
@@ -72,8 +60,5 @@ resource "aws_security_group" "factorio" {
     cidr_blocks = var.ingress_cidrs
   }
 
-  tags = merge(
-    { Name = "factorio" },
-    local.tags,
-  )
+  tags = { Name = "factorio" }
 }
