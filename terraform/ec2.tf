@@ -18,7 +18,7 @@ resource "aws_instance" "factorio" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.factorio.id]
 
-  user_data                   = templatefile("${path.module}/scripts/start.sh", { bucket = var.s3_bucket, version = var.factorio_version })
+  user_data                   = templatefile("../scripts/ec2.sh", { bucket = var.s3_bucket, version = var.factorio_version })
   user_data_replace_on_change = true
 
   metadata_options {

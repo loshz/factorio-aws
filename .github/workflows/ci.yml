@@ -16,8 +16,8 @@ jobs:
   validate:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
-    - uses: hashicorp/setup-terraform@v2
+    - uses: actions/checkout@v4
+    - uses: hashicorp/setup-terraform@v3
 
     # Initialize terraform with no remote state store and
     # validate resources.

@@ -4,6 +4,9 @@ resource "aws_vpc" "factorio" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
+  # IPv6 support.
+  assign_generated_ipv6_cidr_block = true
+
   tags = { Name = "factorio" }
 }
 
@@ -12,6 +15,11 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.factorio.id
   cidr_block              = var.vpc_cidr
   map_public_ip_on_launch = true
+
+  # IPv6 support.
+  assign_ipv6_address_on_creation = true
+  ipv6_cidr_block                 = cidrsubnet(aws_vpc.factorio.ipv6_cidr_block, 8, 1)
+  ipv6_native                     = false
 
   tags = { Name = "public" }
 }
@@ -32,6 +40,11 @@ resource "aws_route_table" "public" {
     gateway_id = aws_internet_gateway.factorio.id
   }
 
+  route {
+    ipv6_cidr_block = "::/0"
+    gateway_id      = aws_internet_gateway.factorio.id
+  }
+
   tags = { Name = "factorio" }
 }
 
@@ -47,17 +60,19 @@ resource "aws_security_group" "factorio" {
   vpc_id = aws_vpc.factorio.id
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = -1
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port        = 0
+    to_port          = 0
+    protocol         = -1
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   ingress {
-    from_port   = 34197
-    to_port     = 34197
-    protocol    = "udp"
-    cidr_blocks = var.ingress_cidrs
+    from_port        = 34197
+    to_port          = 34197
+    protocol         = "udp"
+    cidr_blocks      = var.ingress_cidrs
+    ipv6_cidr_blocks = var.ingress_cidrs_ipv6
   }
 
   tags = { Name = "factorio" }
