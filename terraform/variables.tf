@@ -48,7 +48,7 @@ variable "ec2_volume_size" {
 
 variable "ingress_cidrs" {
   type        = list(string)
-  description = "List of CIDRs of the allowed ingress traffic"
+  description = "List of IPv4 CIDRs of the allowed ingress traffic"
   default     = ["0.0.0.0/0"]
 
   validation {
@@ -59,8 +59,14 @@ variable "ingress_cidrs" {
   }
 }
 
+variable "ingress_cidrs_ipv6" {
+  type        = list(string)
+  description = "List of IPv6 CIDRs of the allowed ingress traffic"
+  default     = ["::/0"]
+}
+
 variable "factorio_version" {
   type        = string
   description = "Factorio version"
-  default     = "1.1.80"
+  default     = "1.1.100"
 }

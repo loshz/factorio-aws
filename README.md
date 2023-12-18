@@ -17,6 +17,8 @@ You'll then need to create an IAM user with read/write access to the following s
 > **Note**: for better security, you should scope permissions to a single user with fixed resources. Follow the [IAM resource guide](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html) for best practices.
 
 ### Terraform
+
+#### Config
 The following [input variables](https://www.terraform.io/language/values/variables) are configurable:
 
 | Name | Type | Default | Description |
@@ -27,16 +29,20 @@ The following [input variables](https://www.terraform.io/language/values/variabl
 | ec2_instance_type | string | t3a.medium | AWS instance type of the EC2 VM |
 | ec2_volume_size | number | 20 | Size (GiB) of the root EC2 volume |
 | ingress_cidrs | list(string) | ["0.0.0.0/0"] | List of IPv4 CIDRs of the allowed ingress traffic |
-| factorio_version | string | 1.1.80 | Factorio version |
+| ingress_cidrs_ipv6 | list(string) | ["::/0"] | List of IPv6 CIDRs of the allowed ingress traffic |
+| factorio_version | string | 1.1.100 | Factorio version |
 
-Once all of the above has been configured, you can run the following commands:
+#### Apply
+Navigate to the `./terraform` directory and write your desired config values to a `terraform.tfvars` file. Proceed to run the following commands:
 ```bash
-$ cd ./terraform
+# Initialize backend variables
+$ echo 'bucket = "[bucket]"
+region = "[region]"' > backend.tfvars
 
-# Initialize Terraform:
-$ terraform init
+# Initialize Terraform
+$ terraform init -backend-config=backend.tfvars
 
-# Create the resources:
+# Create the resources
 $ terraform apply
 ...
 Apply complete! Resources: 13 added, 0 changed, 0 destroyed.
