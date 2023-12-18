@@ -68,5 +68,5 @@ variable "ingress_cidrs_ipv6" {
 variable "factorio_version" {
   type        = string
   description = "Factorio version"
-  default     = "1.1.94"
+  default     = "1.1.100"
 }
