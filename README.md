@@ -30,7 +30,7 @@ The following [input variables](https://www.terraform.io/language/values/variabl
 | ec2_volume_size | number | 20 | Size (GiB) of the root EC2 volume |
 | ingress_cidrs | list(string) | ["0.0.0.0/0"] | List of IPv4 CIDRs of the allowed ingress traffic |
 | ingress_cidrs_ipv6 | list(string) | ["::/0"] | List of IPv6 CIDRs of the allowed ingress traffic |
-| factorio_version | string | 1.1.100 | Factorio version |
+| factorio_version | string | latest | Factorio version (find specific versions [here](https://factorio.com/download)) |
 
 #### Apply
 Navigate to the `./terraform` directory and write your desired config values to a `terraform.tfvars` file. Proceed to run the following commands:
