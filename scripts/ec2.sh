@@ -48,6 +48,12 @@ if aws s3 ls $${S3}/data/server-settings.json > /dev/null; then
 	aws s3 cp $${S3}/data/server-settings.json ./data/server-settings.json
 fi
 
+# Check S3 for existing mod settings.
+if aws s3 ls $${S3}/mods/mod-list.json > /dev/null; then
+	echo "Found existing mod settings in S3"
+	aws s3 cp $${S3}/mods/mod-list.json ./mods/mod-list.json
+fi
+
 # Change file permisions and create factorio user.
 sudo adduser --system $${USER}
 sudo chown -R $${USER}:$${USER} $${INSTALL_DIR}
