@@ -1,17 +1,22 @@
 # Get the latest Amazon Linux 2 AMI.
-data "aws_ami" "amazon_linux_2" {
+data "aws_ami" "amazon_linux_2023" {
   most_recent = true
   owners      = ["amazon"]
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm*"]
+    values = ["al2023-ami-2023*"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
   }
 }
 
 # Create a single EC2 instance with a public ip.
 resource "aws_instance" "factorio" {
-  ami                    = data.aws_ami.amazon_linux_2.id
+  ami                    = data.aws_ami.amazon_linux_2023.id
   iam_instance_profile   = aws_iam_instance_profile.factorio.id
   instance_type          = var.ec2_instance_type
   monitoring             = true
