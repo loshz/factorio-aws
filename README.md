@@ -50,6 +50,7 @@ Apply complete! Resources: 13 added, 0 changed, 0 destroyed.
 
 ### Factorio
 By default, the server will create a new save file and randomly generated map on startup. Optionally, you can configure these settings by uploading the following files to your S3 bucket and they'll be used by the server automatically.
+> **Note**: if you are using version >= 2.0, new saves will automatically create a Space Age save. You can disable this via the mods file.
 
 To use a previous save, upload the zip file to:
 ```
@@ -65,6 +66,12 @@ s3://[bucket]/factorio/data/
 - `map-settings.json`: To control pollution spread, biter expansion and evolution, and more.
 - `server-settings.json`: To specify game visibility, timeouts, etc.
 
+To configure mod settings, upload the following files to:
+```
+s3://[bucket]/factorio/mods/
+```
+- `mod-list.json`: List of enabled/disabled mods.
+
 You can find examples of each file under the same directories in your local installation.
 
 ### Debugging
@@ -72,3 +79,10 @@ If you need access to the server, you can use the instance's [SSM agent](https:/
 ```bash
 $ aws ssm start-session --target [instance_id]
 ```
+You can view logs from the headless server via systemd:
+```bash
+$ sudo su
+$ journalctl -u factorio.service
+```
+
+Configuration files are located at `/opt/factorio/`
