@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+# Init vars.
+INSTALL_DIR="/opt/factorio"
+BIN="$INSTALL_DIR/bin/x64/factorio"
+USER="factorio"
+
+function get_ssm_params {
+	aws ssm get-parameter --name "factorio" --query "Parameter.Value" --output text
+}
+
+function get_s3_bucket {
+	echo "s3://$(get_ssm_params | jq -r '.s3_bucket')/factorio"
+}
+
+function get_version {
+	get_ssm_params | jq -r '.version'
+}
+
+function backup {
+	local S3
+	S3=$(get_s3_bucket)
+
+	echo "Backing up current Factorio save..."
+	aws s3 cp "$INSTALL_DIR"/saves/factorio.zip "$S3"/factorio.zip
+}
+
+function install {
+	local VERSION
+	local S3
+	VERSION=$(get_version)
+	S3=$(get_s3_bucket)
+
+	# Install required packages.
+	sudo yum install -y tar
+
+	# Download and install the headless server.
+	echo "Downloading Factorio headless server $VERSION"
+	curl -sL https://www.factorio.com/get-download/"$VERSION"/headless/linux64 | sudo tar -xJ -C /opt
+	cd "$INSTALL_DIR"
+
+	# In the install directory, check S3 for an existing save file or create a new one.
+	if aws s3 ls "$S3"/factorio.zip > /dev/null; then
+		echo "Found existing save file in S3"
+		aws s3 cp "$S3"/factorio.zip ./saves/factorio.zip
+	else
+		# Check S3 for existing map gen settings.
+		if aws s3 ls "$S3"/map-gen-settings.json > /dev/null; then
+			echo "Found existing map gen settings in S3"
+			aws s3 cp "$S3"/map-gen-settings.json ./data/map-gen-settings.json
+		else
+			echo "Using default map gen settings"
+			mv ./data/map-gen-settings.example.json ./data/map-gen-settings.json
+		fi
+
+		# Check S3 for existing map settings.
+		if aws s3 ls "$S3"/map-settings.json > /dev/null; then
+			echo "Found existing map settings in S3"
+			aws s3 cp "$S3"/map-settings.json ./data/map-settings.json
+		else
+			echo "Using default map settings"
+			mv ./data/map-settings.example.json ./data/map-settings.json
+		fi
+
+		echo "Creating new save file"
+		$BIN --create ./saves/factorio.zip \
+			--map-gen-settings ./data/map-gen-settings.json \
+			--map-settings ./data/map-settings.json
+	fi
+
+	# Check S3 for server settings.
+	if aws s3 ls "$S3"/server-settings.json > /dev/null; then
+		echo "Found existing server settings in S3"
+		aws s3 cp "$S3"/server-settings.json ./data/server-settings.json
+	else
+		echo "Using default server settings"
+		mv ./data/server-settings.example.json ./data/server-settings.json
+	fi
+
+	# Check S3 for existing mod settings.
+	if aws s3 ls "$S3"/mod-list.json > /dev/null; then
+		echo "Found existing mod settings in S3"
+		aws s3 cp "$S3"/mod-list.json ./mods/mod-list.json
+	fi
+
+	# Change file permisions and create factorio user.
+	sudo adduser --system $USER
+	sudo chown -R $USER:$USER $INSTALL_DIR
+
+	# Create a systemd service for the headless server.
+	echo "[Unit]
+Description=Factorio Headless Server
+
+[Service]
+Type=simple
+User=$USER
+ExecStart=$BIN --server-settings $INSTALL_DIR/data/server-settings.json --start-server-load-latest $INSTALL_DIR/saves/factorio.zip" | sudo tee /etc/systemd/system/factorio.service
+
+	# Create a systemd service for the backup service.
+	echo "[Unit]
+Description=Sync Factorio saves to S3
+
+[Service]
+Type=oneshot
+User=$USER
+ExecStart=/usr/bin/factorioctl backup" | sudo tee /etc/systemd/system/factorio-backup.service
+
+# Create a systemd timer for backup service.
+echo "[Unit]
+Description=Run Factorio backup service every 15m
+
+[Timer]
+OnBootSec=900s
+OnUnitActiveSec=900s
+
+[Install]
+WantedBy=timers.target" | sudo tee /etc/systemd/system/factorio-backup.timer
+}
+
+function update {
+	local VERSION
+	VERSION=$(get_version)
+
+	# Back up the current save.
+	factorioctl backup
+
+	# Download the current required version.
+	echo "Updating Factorio headless server to $VERSION"
+	curl -sL https://www.factorio.com/get-download/"$VERSION"/headless/linux64 | sudo tar -xJ -C /opt
+
+	# Restart the systemd service
+	echo "Restarting services"
+	sudo systemctl restart factorio.service
+}
+
+function usage {
+	echo "$(basename "$0") 0.10.0"
+	echo ""
+	echo "Usage: $(basename "$0") <COMMAND>"
+	echo ""
+	echo "Commands:"
+	echo "  backup    Copy the current save file to S3"
+	echo "  install   Install a Factorio headlesss server"
+	echo "  start     Start a Factorio headlesss server"
+	echo "  update    Update the Factorio headless server version"
+	exit 1
+}
+
+case "$1" in
+	backup)
+		backup
+		;;
+	install)
+		install
+		;;
+	start)
+		echo "Starting Factorio headless server services..."
+		sudo systemctl enable --now factorio.service factorio-backup.timer
+		;;
+	update)
+		update
+		;;
+	*)
+		usage
+		;;
+esac

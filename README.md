@@ -11,6 +11,7 @@ Firstly, you'll need to [create an S3 bucket](https://docs.aws.amazon.com/Amazon
 You'll then need to create an IAM user with read/write access to the following services:
 - EC2
 - IAM
+- SSM
 - S3
 - VPC
 
@@ -54,13 +55,13 @@ By default, the server will create a new save file and randomly generated map on
 
 To use a previous save, upload the zip file to:
 ```
-s3://[bucket]/factorio/saves/factorio.zip
+s3://[bucket]/factorio/factorio.zip
 ```
 > **Note**: the server will automatically backup save files to the above S3 bucket every 15mins. 
 
 To configure server and map settings, upload the following files to:
 ```
-s3://[bucket]/factorio/data/
+s3://[bucket]/factorio/
 ```
 - `map-gen-settings.json`: To set parameters used by the map generator such as width and height, ore patch frequency and size, etc.
 - `map-settings.json`: To control pollution spread, biter expansion and evolution, and more.
@@ -68,11 +69,14 @@ s3://[bucket]/factorio/data/
 
 To configure mod settings, upload the following files to:
 ```
-s3://[bucket]/factorio/mods/
+s3://[bucket]/factorio/
 ```
 - `mod-list.json`: List of enabled/disabled mods.
 
 You can find examples of each file under the same directories in your local installation.
+
+### Updating
+
 
 ### Debugging
 If you need access to the server, you can use the instance's [SSM agent](https://docs.aws.amazon.com/systems-manager/latest/userguide/prereqs-ssm-agent.html) to connect via the AWS CLI:

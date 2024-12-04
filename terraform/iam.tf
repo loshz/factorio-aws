@@ -17,9 +17,38 @@ resource "aws_iam_role" "factorio" {
 }
 
 # Attach the managed SSM policy to the base role.
-resource "aws_iam_role_policy_attachment" "ssm" {
+resource "aws_iam_role_policy_attachment" "ssm_manage" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   role       = aws_iam_role.factorio.id
+}
+
+# Create a custom SSM read policy for a given parameter.
+resource "aws_iam_policy" "ssm_read" {
+  name = "FactorioServerSSMRead"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid      = "ListParametersInStore",
+        Effect   = "Allow",
+        Action   = "ssm:DescribeParameters",
+        Resource = "*"
+      },
+      {
+        Sid      = "ReadParametersInStore",
+        Effect   = "Allow",
+        Action   = "ssm:GetParameters",
+        Resource = "arn:aws:ssm:::parameter/factorio*"
+      }
+    ]
+  })
+}
+
+# Attach the SSM read policy to the base IAM role.
+resource "aws_iam_role_policy_attachment" "ssm_read" {
+  role       = aws_iam_role.factorio.id
+  policy_arn = aws_iam_policy.ssm_read.arn
 }
 
 # Create a custom S3 read/write policy to our bucket.
@@ -32,14 +61,14 @@ resource "aws_iam_policy" "s3_read_write" {
       {
         Sid      = "ListObjectsInBucket",
         Effect   = "Allow",
-        Action   = ["s3:ListBucket"],
-        Resource = ["arn:aws:s3:::${var.s3_bucket}"]
+        Action   = "s3:ListBucket",
+        Resource = "arn:aws:s3:::${var.s3_bucket}"
       },
       {
         Sid      = "AllObjectActions",
         Effect   = "Allow",
         Action   = "s3:*Object",
-        Resource = ["arn:aws:s3:::${var.s3_bucket}/factorio/*"]
+        Resource = "arn:aws:s3:::${var.s3_bucket}/factorio/*"
       }
     ]
   })

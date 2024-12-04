@@ -16,15 +16,22 @@ data "aws_ami" "amazon_linux_2023" {
 
 # Create a single EC2 instance with a public ip.
 resource "aws_instance" "factorio" {
-  ami                    = data.aws_ami.amazon_linux_2023.id
-  iam_instance_profile   = aws_iam_instance_profile.factorio.id
-  instance_type          = var.ec2_instance_type
-  monitoring             = true
-  subnet_id              = aws_subnet.public.id
-  vpc_security_group_ids = [aws_security_group.factorio.id]
-
-  user_data                   = templatefile("../scripts/ec2.sh", { bucket = var.s3_bucket, version = var.factorio_version })
+  ami                         = data.aws_ami.amazon_linux_2023.id
+  iam_instance_profile        = aws_iam_instance_profile.factorio.id
+  instance_type               = var.ec2_instance_type
+  monitoring                  = true
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.factorio.id]
   user_data_replace_on_change = true
+
+  user_data = <<EOF
+#!/bin/bash
+curl -sL https://github.com/loshz/factorio-aws/releases/download/0.10.0/factorioctl -o /tmp/factorioctl
+chmod +x /tmp/factorioctl
+sudo mv /tmp/factorioctl /bin/factorioctl
+factorioctl install
+factorioctl start
+EOF
 
   metadata_options {
     http_endpoint = "enabled"
