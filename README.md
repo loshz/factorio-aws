@@ -76,7 +76,17 @@ s3://[bucket]/factorio/
 You can find examples of each file under the same directories in your local installation.
 
 ### Updating
-
+In order to update the version of Factorio, you can perform the following steps:
+1. Update the `factorio_version` variable in your local `.tfvars` file and apply the changes:
+```bash
+$ terraform apply
+```
+2. Exec onto the server and perform a service update:
+> **Note**: the process will automatically save a backup of the current save file to S3 before performing any updates. 
+```bash
+$ aws ssm start-session --target [instance_id]
+$ factorioctl update
+```
 
 ### Debugging
 If you need access to the server, you can use the instance's [SSM agent](https://docs.aws.amazon.com/systems-manager/latest/userguide/prereqs-ssm-agent.html) to connect via the AWS CLI:
