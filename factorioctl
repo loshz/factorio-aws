@@ -128,7 +128,7 @@ function update {
 
 	# Download the current required version.
 	echo "Updating Factorio headless server to $VERSION"
-	curl -sL https://www.factorio.com/get-download/"$VERSION"/headless/linux64 | sudo tar -xJ -C /opt
+	curl --proto '=https' --tlsv1.2 -LsSf https://www.factorio.com/get-download/"$VERSION"/headless/linux64 | sudo tar -xJ -C /opt
 
 	# Restart the systemd service
 	echo "Restarting services"

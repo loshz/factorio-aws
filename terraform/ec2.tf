@@ -16,7 +16,7 @@ data "aws_ami" "amazon_linux_2023" {
 
 # Create a single EC2 instance with a public ip.
 resource "aws_instance" "factorio" {
-  ami                         = try(var.ec2_ami, data.aws_ami.amazon_linux_2023.id)
+  ami                         = var.ec2_ami != null ? var.ec2_ami : data.aws_ami.amazon_linux_2023.id
   iam_instance_profile        = aws_iam_instance_profile.factorio.id
   instance_type               = var.ec2_instance_type
   monitoring                  = true

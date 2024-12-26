@@ -32,7 +32,7 @@ variable "vpc_cidr" {
 variable "ec2_ami" {
   type        = string
   description = "AMI of the EC2 VM"
-  default     = ""
+  default     = null
 }
 
 variable "ec2_instance_type" {
