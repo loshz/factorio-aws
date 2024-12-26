@@ -136,7 +136,7 @@ function update {
 }
 
 function usage {
-	echo "$(basename "$0") 0.10.0"
+	echo "$(basename "$0") 0.11.0"
 	echo ""
 	echo "Usage: $(basename "$0") <COMMAND>"
 	echo ""
