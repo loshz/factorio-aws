@@ -38,7 +38,7 @@ function install {
 
 	# Download and install the headless server.
 	echo "Downloading Factorio headless server $VERSION"
-	curl -sL https://www.factorio.com/get-download/"$VERSION"/headless/linux64 | sudo tar -xJ -C /opt
+	curl --proto '=https' --tlsv1.2 -LsSf https://www.factorio.com/get-download/"$VERSION"/headless/linux64 | sudo tar -xJ -C /opt
 	cd "$INSTALL_DIR"
 
 	# In the install directory, check S3 for an existing save file or create a new one.

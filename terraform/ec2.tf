@@ -16,7 +16,7 @@ data "aws_ami" "amazon_linux_2023" {
 
 # Create a single EC2 instance with a public ip.
 resource "aws_instance" "factorio" {
-  ami                         = data.aws_ami.amazon_linux_2023.id
+  ami                         = try(var.ec2_ami, data.aws_ami.amazon_linux_2023.id)
   iam_instance_profile        = aws_iam_instance_profile.factorio.id
   instance_type               = var.ec2_instance_type
   monitoring                  = true
@@ -26,7 +26,7 @@ resource "aws_instance" "factorio" {
 
   user_data = <<EOF
 #!/bin/bash
-curl -sL https://github.com/loshz/factorio-aws/releases/download/0.10.0/factorioctl -o /tmp/factorioctl
+curl --proto '=https' --tlsv1.2 -LsSf https://github.com/loshz/factorio-aws/releases/download/0.11.0/factorioctl -o /tmp/factorioctl
 chmod +x /tmp/factorioctl
 sudo mv /tmp/factorioctl /bin/factorioctl
 factorioctl install

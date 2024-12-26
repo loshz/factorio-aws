@@ -27,6 +27,7 @@ The following [input variables](https://www.terraform.io/language/values/variabl
 | s3_bucket | string || AWS S3 bucket name for storing state and other configs |
 | region | string || AWS region in which all resources will be created |
 | vpc_cidr | string | 172.25.16.0/24 | CIDR of the VPC |
+| ec2_ami | string | Latest Amazon Linux 2023 | AMI of the EC2 VM |
 | ec2_instance_type | string | t3a.medium | AWS instance type of the EC2 VM |
 | ec2_volume_size | number | 20 | Size (GiB) of the root EC2 volume |
 | ingress_cidrs | list(string) | ["0.0.0.0/0"] | List of IPv4 CIDRs of the allowed ingress traffic |
